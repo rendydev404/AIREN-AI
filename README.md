@@ -1,9 +1,9 @@
-<<<<<<< HEAD
+
 # AIREN-AI
 =======
 # AIREN-AI Next.js
 
-Aplikasi AI Assistant yang dibuat dengan Next.js 15, TypeScript, dan Tailwind CSS. Dibuat oleh Rendi Irawan.
+Aplikasi AI Assistant yang dibuat dengan Next.js 15, TypeScript, dan Tailwind CSS.
 
 ## Fitur
 
@@ -144,9 +144,9 @@ MIT License - lihat file LICENSE untuk detail
 - Email: irawanrendy55@gmail.com
 - Instagram: [@rendyy_404](https://www.instagram.com/rendyy_404)
 - WhatsApp: [+6285885497377](https://wa.me/6285885497377)
-- GitHub: [@masihPemula5](https://github.com/masihPemula5)
+- GitHub: [@rendydev404](https://github.com/rendydev404)
 
 ---
 
-Dibuat dengan ❤️ oleh Rendi Irawan
+BY RENDY IRAWAN
 >>>>>>> a18d3e8 (Initial commit)
