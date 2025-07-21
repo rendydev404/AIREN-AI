@@ -835,7 +835,7 @@ export default function Home() {
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         theme={theme || 'light'}
-        onThemeChange={() => {}}
+        onThemeChange={setTheme}
       />
 
       <Modal
