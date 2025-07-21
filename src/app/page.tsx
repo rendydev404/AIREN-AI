@@ -846,7 +846,7 @@ export default function Home() {
       >
         <div className="text-center">
           <img 
-            src="https://placehold.co/100x100/0ea5e9/white?text=R&font=orbitron" 
+            src="/pp1.jpg" 
             alt="Developer Avatar" 
             className="w-24 h-24 rounded-full mx-auto mb-4 border-3 border-[var(--accent-primary)] object-cover"
           />
