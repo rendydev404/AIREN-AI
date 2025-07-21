@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # AIREN-AI
 =======
 # AIREN-AI Next.js
@@ -148,5 +148,5 @@ MIT License - lihat file LICENSE untuk detail
 
 ---
 
-Dibuat dengan ❤️ oleh Rendi Irawan
+BY RENDY IRAWAN
 >>>>>>> a18d3e8 (Initial commit)
