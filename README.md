@@ -138,13 +138,16 @@ npm start
 
 MIT License - lihat file LICENSE untuk detail
 
-## Developer
+## 👨‍💻 Developer
 
 **Rendi Irawan**
-- Email: irawanrendy55@gmail.com
-- Instagram: [@rendyy_404](https://www.instagram.com/rendyy_404)
-- WhatsApp: [+6285885497377](https://wa.me/6285885497377)
-- GitHub: [@rendydev404](https://github.com/rendydev404)
+
+---
+
+[![Email](https://img.shields.io/badge/Email-irawanrendy55@gmail.com-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:irawanrendy55@gmail.com)
+[![Instagram](https://img.shields.io/badge/@rendyy__404-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/rendyy_404)
+[![GitHub](https://img.shields.io/badge/GitHub-rendydev404-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rendydev404)
+
 
 ---
 
