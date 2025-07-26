@@ -142,10 +142,6 @@ MIT License - lihat file LICENSE untuk detail
 
 **Rendi Irawan**
 
-📧 Email: [irawanrendy55@gmail.com](mailto:irawanrendy55@gmail.com)  
-🌐 Instagram: [@rendyy_404](https://www.instagram.com/rendyy_404)  
-💻 GitHub: [@rendydev404](https://github.com/rendydev404)
-
 ---
 
 [![Email](https://img.shields.io/badge/Email-irawanrendy55@gmail.com-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:irawanrendy55@gmail.com)
