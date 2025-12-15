@@ -12,6 +12,7 @@ import { VoiceInput } from "@/components/voice-input";
 import { ExportChat } from "@/components/export-chat";
 import { ClearChat } from "@/components/clear-chat";
 import { Settings } from "@/components/settings";
+import { DeveloperInfo } from "@/components/developer-info";
 import { PWAInstall } from "@/components/pwa-install";
 import { OfflineIndicator } from "@/components/offline-indicator";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -549,8 +550,7 @@ export default function Home() {
       console.error("Error meringkas:", error);
       showInfoModal(
         "Error",
-        `Gagal membuat ringkasan percakapan. ${
-          error instanceof Error ? error.message : "Unknown error"
+        `Gagal membuat ringkasan percakapan. ${error instanceof Error ? error.message : "Unknown error"
         }`
       );
     }
@@ -714,9 +714,8 @@ export default function Home() {
     <div className="flex flex-col h-screen overflow-x-hidden">
       {/* Mobile Sidebar */}
       <div
-        className={`fixed inset-0 z-50 lg:hidden ${
-          isSidebarOpen ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 z-50 lg:hidden ${isSidebarOpen ? "block" : "hidden"
+          }`}
       >
         <div
           id="sidebar-overlay"
@@ -1013,72 +1012,10 @@ export default function Home() {
         onThemeChange={setTheme}
       />
 
-      <Modal
+      <DeveloperInfo
         isOpen={isDeveloperInfoOpen}
         onClose={() => setIsDeveloperInfoOpen(false)}
-        title=""
-        className="w-11/12 max-w-lg flex items-center justify-center"
-      >
-        <div className="text-center">
-          <img
-            src="/pp1.jpg"
-            alt="Developer Avatar"
-            className="w-24 h-24 rounded-full mx-auto mb-4 border-3 border-[var(--accent-primary)] object-cover"
-          />
-          <h3
-            className="text-2xl font-bold mb-1"
-            style={{ color: "var(--accent-primary)" }}
-          >
-            Rendy Irawan
-          </h3>
-          <p
-            className="text-sm mb-1"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            Fullstack Developer & AI Enthusiast
-          </p>
-          <a
-            href="mailto:irawanrendy55@gmail.com"
-            className="block text-sm mb-4 hover:underline"
-            style={{ color: "var(--accent-primary)" }}
-          >
-            irawanrendy55@gmail.com
-          </a>
-
-          <div className="mb-6">
-            <a
-              href="https://www.instagram.com/rendyy_404?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Instagram"
-              className="inline-block mx-3 transition-all duration-200 hover:scale-120"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              <i className="fab fa-instagram text-2xl"></i>
-            </a>
-            <a
-              href="https://wa.me/6285885497377"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="WhatsApp"
-              className="inline-block mx-3 transition-all duration-200 hover:scale-120"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              <i className="fab fa-whatsapp text-2xl"></i>
-            </a>
-            <a
-              href="https://github.com/rendydev404"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Github"
-              className="inline-block mx-3 transition-all duration-200 hover:scale-120"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              <i className="fab fa-github text-2xl"></i>
-            </a>
-          </div>
-        </div>
-      </Modal>
+      />
 
       <PWAInstall />
       <OfflineIndicator />

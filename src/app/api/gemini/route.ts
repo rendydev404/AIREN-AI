@@ -1,82 +1,131 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { ChatMessage, GeminiResponse } from '@/types'
+import { GoogleGenerativeAI, Part } from '@google/generative-ai'
 
 export async function POST(request: NextRequest) {
   try {
     const { messages, type } = await request.json()
-    
-    // Use hardcoded values for testing
-    const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyByOkC9S5xPskOe915uvlvKk0oq4tgYOTs'
-    const apiUrl = process.env.GEMINI_API_URL || 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
-    
+
+    // Get API key from environment variables
+    const apiKey = process.env.GEMINI_API_KEY
+
     console.log('API Key exists:', !!apiKey)
-    console.log('API URL exists:', !!apiUrl)
-    console.log('API URL:', apiUrl)
-    
-    if (!apiKey || !apiUrl) {
-      console.error('Missing environment variables:', { apiKey: !!apiKey, apiUrl: !!apiUrl })
+
+    if (!apiKey) {
+      console.error('Missing GEMINI_API_KEY environment variable')
       return NextResponse.json(
-        { error: 'API key atau URL tidak ditemukan' },
+        { error: 'API key tidak ditemukan. Pastikan GEMINI_API_KEY sudah diset di .env.local' },
         { status: 500 }
       )
     }
 
-    let payload: any = {
-      contents: messages
+    // Initialize Google AI SDK
+    const genAI = new GoogleGenerativeAI(apiKey)
+
+    // Use gemini-2.5-flash (model terbaru dengan vision support)
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+
+    // Convert messages to the format expected by the SDK
+    // Handle both text and image parts
+    const contents = messages.map((msg: any) => ({
+      role: msg.role,
+      parts: msg.parts.map((part: any): Part => {
+        // Handle text parts
+        if (part.text) {
+          return { text: part.text }
+        }
+        // Handle image parts (inline data)
+        if (part.inlineData) {
+          return {
+            inlineData: {
+              mimeType: part.inlineData.mimeType,
+              data: part.inlineData.data
+            }
+          }
+        }
+        // Handle file data parts
+        if (part.fileData) {
+          return {
+            fileData: {
+              mimeType: part.fileData.mimeType,
+              fileUri: part.fileData.fileUri
+            }
+          }
+        }
+        // Default to empty text if unknown part type
+        return { text: '' }
+      })
+    }))
+
+    console.log('Sending request to Gemini API with SDK...')
+    console.log('Message parts types:', messages[0]?.parts?.map((p: any) =>
+      p.text ? 'text' : p.inlineData ? 'image' : 'unknown'
+    ))
+
+    // Generate content with retry logic for 503 errors
+    let result
+    let retries = 3
+
+    while (retries > 0) {
+      try {
+        result = await model.generateContent({
+          contents: contents
+        })
+        break // Success, exit retry loop
+      } catch (error: any) {
+        if (error.message?.includes('503') || error.message?.includes('overloaded')) {
+          retries--
+          if (retries > 0) {
+            console.log(`Model overloaded, retrying... (${retries} attempts left)`)
+            await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
+            continue
+          }
+        }
+        throw error // Re-throw if not 503 or no retries left
+      }
     }
 
-    // Handle different types of requests
-    if (type === 'imagine') {
-      payload = {
-        contents: messages
-      }
-    } else if (type === 'summarize') {
-      payload = {
-        contents: messages
-      }
-    }
-
-    console.log('Sending request to Gemini API...')
-    const response = await fetch(`${apiUrl}?key=${apiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-
-    console.log('Response status:', response.status)
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ 
-        error: { message: "Respons error tidak valid." }
-      }))
-      console.error('API Error:', errorData)
+    if (!result) {
       return NextResponse.json(
-        { error: `API Error: ${response.status}. ${errorData.error?.message || 'Tidak ada detail.'}` },
-        { status: response.status }
+        { error: 'Model sedang sibuk, coba lagi dalam beberapa saat.' },
+        { status: 503 }
       )
     }
 
-    const result: GeminiResponse = await response.json()
+    const response = result.response
+    const text = response.text()
+
     console.log('API Response received')
-    
-    if (result.candidates && result.candidates.length > 0 &&
-        result.candidates[0].content && result.candidates[0].content.parts &&
-        result.candidates[0].content.parts.length > 0) {
-      return NextResponse.json({
-        text: result.candidates[0].content.parts[0].text
-      })
+
+    return NextResponse.json({ text })
+
+  } catch (error: any) {
+    console.error('Gemini API error:', error)
+
+    // Handle specific error types
+    if (error.message?.includes('API_KEY_INVALID')) {
+      return NextResponse.json(
+        { error: 'API key tidak valid. Silakan buat API key baru di https://aistudio.google.com/app/apikey' },
+        { status: 401 }
+      )
+    }
+
+    if (error.message?.includes('QUOTA_EXCEEDED') || error.message?.includes('429')) {
+      return NextResponse.json(
+        { error: 'Quota API habis. Coba lagi nanti atau gunakan API key yang berbeda.' },
+        { status: 429 }
+      )
+    }
+
+    if (error.message?.includes('503') || error.message?.includes('overloaded')) {
+      return NextResponse.json(
+        { error: 'Server AI sedang sibuk. Coba lagi dalam beberapa saat.' },
+        { status: 503 }
+      )
     }
 
     return NextResponse.json(
-      { error: 'Struktur respons tidak sesuai' },
-      { status: 500 }
-    )
-  } catch (error) {
-    console.error('Gemini API error:', error)
-    return NextResponse.json(
-      { error: 'Terjadi kesalahan internal server' },
+      { error: `Terjadi kesalahan: ${error.message || 'Internal server error'}` },
       { status: 500 }
     )
   }
-} 
+}

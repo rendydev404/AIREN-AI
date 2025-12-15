@@ -1,35 +1,15 @@
 "use client"
 
 import { useEffect, useRef, useState } from 'react'
-import { gsap } from 'gsap'
 import { ModalProps } from '@/types'
 import { createPortal } from 'react-dom'
 
 export function Modal({ isOpen, onClose, title, children, className = "" }: ModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  useEffect(() => {
-    if (!mounted) return
-    if (isOpen) {
-      try {
-        gsap.set(modalRef.current, { opacity: 0, scale: 0.95, display: 'flex' })
-        gsap.to(modalRef.current, { opacity: 1, scale: 1, duration: 0.35, ease: 'power2.out', display: 'flex' })
-        gsap.fromTo(contentRef.current, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: 'power3.out' })
-      } catch {}
-    } else {
-      try {
-        gsap.to(modalRef.current, { opacity: 0, scale: 0.95, duration: 0.3, ease: 'power2.in', onComplete: () => {
-          if (modalRef.current) modalRef.current.style.display = 'none'
-        } })
-      } catch {}
-    }
-  }, [isOpen, mounted])
 
   useEffect(() => {
     if (isOpen) {
@@ -42,62 +22,96 @@ export function Modal({ isOpen, onClose, title, children, className = "" }: Moda
     }
   }, [isOpen])
 
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) onClose()
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isOpen, onClose])
+
   if (!mounted) return null
   if (!isOpen) return null
 
-  // Fallback: force visible jika animasi gagal
-  if (modalRef.current) {
-    modalRef.current.style.display = 'flex'
-    modalRef.current.style.opacity = '1'
-    modalRef.current.style.visibility = 'visible'
-    modalRef.current.style.zIndex = '99999'
-  }
-
   return createPortal(
     <div
-      ref={modalRef}
-      className={`modal fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 ${className}`}
-      style={{
-        padding: '1rem',
-        backdropFilter: 'blur(2px)',
-        WebkitBackdropFilter: 'blur(2px)',
-        zIndex: 99999,
-        display: 'flex',
-        opacity: 1,
-        visibility: 'visible',
-      }}
+      className={`modal fixed inset-0 z-[9999] flex items-center justify-center p-4 ${className}`}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
+      style={{
+        background: 'rgba(0,0,0,0.85)', // Dark dimming for retro focus
+        display: 'flex',
+      }}
     >
       <div
-        ref={contentRef}
-        className="modal-content rounded-xl shadow-2xl p-4 sm:p-6 md:p-8 w-11/12 max-w-lg mx-auto"
+        className="modal-content pixel-box w-full max-w-md mx-auto relative"
         style={{
-          position: 'relative',
-          left: 'auto',
-          right: 'auto',
-          top: 'auto',
-          bottom: 'auto',
-          margin: '0 auto',
-          transform: 'none',
-          maxWidth: '95vw',
-          maxHeight: '95vh',
-          overflowY: 'auto',
+          background: 'var(--panel-bg)',
+          border: '4px solid var(--border-color)',
+          boxShadow: '8px 8px 0px rgba(0,0,0,0.5)',
+          padding: '20px',
+          maxHeight: '90vh',
+          display: 'flex',
+          flexDirection: 'column',
+          borderRadius: 0,
         }}
       >
-        <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4" style={{ color: 'var(--accent-primary)' }}>
-          {title}
-        </h3>
-        <div className="max-h-[60vh] overflow-y-auto text-sm md:text-base leading-relaxed">
+        {/* Retro Title Bar */}
+        <div
+          className="flex justify-between items-center mb-6 pb-2"
+          style={{
+            borderBottom: '4px solid var(--border-color)',
+          }}
+        >
+          <h3
+            className="text-lg font-bold uppercase truncate pr-4"
+            style={{
+              fontFamily: '"Press Start 2P", cursive',
+              color: 'var(--accent-primary)',
+              lineHeight: '1.5',
+            }}
+          >
+            {title}
+          </h3>
+
+          <button
+            onClick={onClose}
+            className="pixel-btn"
+            style={{
+              padding: '4px 8px',
+              minWidth: '32px',
+              minHeight: '32px',
+              background: 'var(--bg-color)',
+            }}
+          >
+            X
+          </button>
+        </div>
+
+        {/* Content */}
+        <div
+          className="relative z-10 overflow-y-auto custom-scrollbar"
+          style={{
+            color: 'var(--text-primary)',
+            fontFamily: '"VT323", monospace',
+            fontSize: '1.2rem',
+          }}
+        >
           {children}
         </div>
-        <button
-          onClick={onClose}
-          className="modal-close-button mt-6 w-full rounded-lg"
-        >
-          Tutup
-        </button>
+
+        {/* Bottom Button Area if needed, but usually just content for modals. 
+            We'll add a pixel separator though. */}
+        <div className="mt-6 pt-4 border-t-4 border-[var(--border-color)]">
+          <button
+            onClick={onClose}
+            className="pixel-btn w-full"
+          >
+            CLOSE
+          </button>
+        </div>
       </div>
     </div>,
     typeof window !== 'undefined' ? document.body : (null as any)
   )
-} 
+}

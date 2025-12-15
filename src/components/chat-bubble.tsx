@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 import { escapeHtml } from '@/lib/utils'
-import { gsap } from 'gsap'
 import { ChatBubbleProps } from '@/types'
 
 export function ChatBubble({
@@ -22,18 +21,7 @@ export function ChatBubble({
 }: ChatBubbleProps) {
   const bubbleRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (bubbleRef.current) {
-      try {
-        gsap.fromTo(bubbleRef.current, 
-          { opacity: 0, y: 30, scale: 0.9 }, 
-          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "elastic.out(1, 0.65)"}
-        )
-      } catch (error) {
-        console.warn('GSAP error in chat bubble:', error)
-      }
-    }
-  }, [])
+  // Removed GSAP animations for retro feel, or keep them simple
 
   const handleCopyCode = (codeId: string) => {
     const codeElement = document.getElementById(codeId)
@@ -43,18 +31,18 @@ export function ChatBubble({
         alert('Tidak ada kode untuk disalin.')
         return
       }
-      
+
       navigator.clipboard.writeText(codeText).then(() => {
         const copyBtn = document.getElementById(`copy-${codeId}`)
         if (copyBtn) {
-          copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!'
+          copyBtn.innerHTML = '<i class="fas fa-check"></i> COPIED!'
           setTimeout(() => {
-            copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy'
+            copyBtn.innerHTML = '<i class="fas fa-copy"></i> COPY'
           }, 2000)
         }
       }).catch(err => {
         console.error('Failed to copy code: ', err)
-        alert('Gagal menyalin kode. Silakan coba lagi.')
+        alert('Gagal menyalin kode.')
       })
     }
   }
@@ -63,7 +51,7 @@ export function ChatBubble({
     let contentHtml = ''
 
     if (imageUrl) {
-      contentHtml += `<img src="${imageUrl}" alt="Gambar terkirim" class="sent-image mb-2">`
+      contentHtml += `<div class="p-1 bg-[var(--text-primary)] inline-block"><img src="${imageUrl}" alt="Gambar terkirim" class="sent-image mb-2 block border-2 border-[var(--text-primary)]" style="image-rendering: pixelated; max-width: 100%; height: auto;"></div>`
     }
 
     if (sender === 'user') {
@@ -80,20 +68,20 @@ export function ChatBubble({
       } else if (isCodeBubble && codeContent) {
         const uniqueCopyId = `copy-code-${Date.now()}`
         const codeBlockId = `code-block-${uniqueCopyId}`
-        
+
         return (
-          <div className="ai-code-bubble-container">
-            <div className="ai-code-bubble-header">
-              <span className="ai-code-language-tag">{codeLang || 'CODE'}</span>
-              <button 
-                className="ai-code-copy-button" 
+          <div className="ai-code-bubble-container mt-2">
+            <div className="ai-code-bubble-header flex justify-between items-center mb-2 border-b-2 border-white/20 pb-1">
+              <span className="ai-code-language-tag px-2 py-0.5 text-xs">{codeLang || 'CODE'}</span>
+              <button
+                className="ai-code-copy-button pixel-btn text-xs py-1 px-2"
                 id={uniqueCopyId}
                 onClick={() => handleCopyCode(codeBlockId)}
               >
-                <i className="fas fa-copy"></i> Copy
+                <i className="fas fa-copy"></i> COPY
               </button>
             </div>
-            <pre className="ai-code-block" id={codeBlockId}>
+            <pre className="ai-code-block overflow-x-auto p-2" id={codeBlockId}>
               <code>{escapeHtml(codeContent)}</code>
             </pre>
           </div>
@@ -102,9 +90,9 @@ export function ChatBubble({
         return (
           <>
             {message && <div dangerouslySetInnerHTML={{ __html: message.replace(/\n/g, '<br>') + '<br>' }} />}
-            <button 
+            <button
               id={actionButtonId}
-              className="ai-action-button"
+              className="ai-action-button pixel-btn mt-2"
               onClick={() => onActionClick?.(actionData)}
             >
               {actionButtonText}
@@ -123,13 +111,15 @@ export function ChatBubble({
   }
 
   return (
-    <div 
+    <div
       ref={bubbleRef}
-      className={`flex chat-bubble ${sender === 'user' ? 'justify-end mb-3' : 'justify-start mb-3'}`}
+      className={`flex chat-bubble ${sender === 'user' ? 'justify-end' : 'justify-start'}`}
     >
-      <div className={`rounded-xl p-3 max-w-[85vw] sm:max-w-sm md:max-w-md lg:max-w-lg text-sm shadow-lg break-words ${
-        sender === 'user' ? 'user-bubble' : 'ai-bubble'
-      }`}>
+      <div className={`p-4 max-w-[85vw] sm:max-w-sm md:max-w-md lg:max-w-lg text-lg break-words ${sender === 'user' ? 'user-bubble' : 'ai-bubble'
+        }`} style={{
+          imageRendering: 'pixelated',
+          fontFamily: sender === 'user' ? '"VT323", monospace' : '"VT323", monospace'
+        }}>
         {renderContent()}
       </div>
     </div>
