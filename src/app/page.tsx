@@ -724,7 +724,7 @@ export default function Home() {
         ></div>
         <div
           ref={sidebarRef}
-          className="absolute left-0 top-0 h-full w-80 bg-[var(--bg-secondary)] shadow-2xl transform transition-transform duration-300 ease-in-out"
+          className="absolute left-0 top-0 h-full w-80 bg-[var(--bg-secondary)] shadow-2xl transform transition-transform duration-300 ease-in-out sidebar-content"
         >
           {/* Ganti bagian ini di dalam Mobile Sidebar */}
           <div className="p-4 border-b border-[var(--border-color)]">
@@ -735,6 +735,7 @@ export default function Home() {
               <button
                 onClick={() => setIsSidebarOpen(false)}
                 className="p-2 rounded-lg hover:bg-[var(--bg-input)] transition-colors"
+                aria-label="Close Sidebar"
               >
                 {/* PERUBAHAN: Ganti text-secondary menjadi text-primary dan perbesar ukuran font */}
                 <i className="fas fa-times text-[var(--text-primary)] text-xl"></i>
@@ -914,30 +915,33 @@ export default function Home() {
 
       <footer
         ref={appFooterRef}
-        className="p-2 sm:p-3 md:p-4 shadow-t-xl transition-colors duration-500 opacity-100 translate-y-0 bg-[var(--bg-secondary)]"
+        className="p-2 sm:p-3 md:p-4 transition-colors duration-500 opacity-100 translate-y-0"
       >
-        <div className="container mx-auto">
+        <div className="container mx-auto max-w-4xl">
           {showImagePreview && (
-            <div className="image-preview-container relative">
-              <img
-                src={imagePreview}
-                alt="Pratinjau Gambar"
-                className="max-h-32 rounded-lg shadow-md mx-auto mb-2 border-2 border-dashed border-[var(--accent-primary)]"
-              />
-              <button
-                onClick={removeImage}
-                className="absolute top-1 right-1 text-white rounded-full p-1 w-7 h-7 flex items-center justify-center text-lg leading-none focus:outline-none transition-transform duration-200 bg-red-500 hover:bg-red-600 hover:scale-110"
-              >
-                <i className="fas fa-times"></i>
-              </button>
+            <div className="image-preview-container relative mb-4 animate-in fade-in slide-in-from-bottom-2">
+              <div className="relative inline-block border-4 border-[var(--border-color)] bg-[var(--panel-bg)] shadow-[4px_4px_0px_var(--border-color)] p-1">
+                <img
+                  src={imagePreview}
+                  alt="Pratinjau Gambar"
+                  className="max-h-32 object-contain image-pixelated"
+                />
+                <button
+                  onClick={removeImage}
+                  className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 text-white border-2 border-black flex items-center justify-center hover:scale-110 transition-transform shadow-[2px_2px_0px_rgba(0,0,0,0.3)] z-10"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
             </div>
           )}
-          <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 p-2 border-2 border-[var(--accent-primary)] rounded-2xl bg-[var(--bg-input)] shadow-lg">
+
+          <div className="pixel-input-wrapper gap-2 sm:gap-3">
             <label
               htmlFor="image-upload-input"
-              className="rounded-lg cursor-pointer transition-all duration-200 p-3 text-[var(--accent-primary)] hover:text-[var(--accent-primary-hover)] hover:bg-[rgba(var(--accent-primary-rgb),0.15)] hover:scale-110"
+              className="cursor-pointer p-2 text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors active:scale-95"
             >
-              <i className="fas fa-image"></i>
+              <i className="fas fa-image text-xl"></i>
             </label>
             <input
               type="file"
@@ -949,8 +953,8 @@ export default function Home() {
             <input
               ref={chatInputRef}
               type="text"
-              placeholder="Tanya AIREN-AI apa saja..."
-              className="flex-1 py-3 px-2 bg-transparent focus:outline-none text-sm md:text-base font-roboto-mono text-[var(--text-primary)] placeholder-[var(--text-secondary)]"
+              placeholder="Tanya AIREN-AI..."
+              className="pixel-input-field"
               onKeyPress={handleKeyPress}
             />
             <VoiceInput
@@ -959,7 +963,7 @@ export default function Home() {
             />
             <button
               onClick={handleSendMessage}
-              className="focus:outline-none transition-all duration-200 transform active:scale-90 bg-[var(--accent-primary)] text-[var(--bubble-user-text)] p-3 rounded-xl hover:bg-[var(--accent-primary-hover)] hover:scale-105"
+              className="pixel-btn !p-2 !min-w-[40px] !min-h-[40px] flex items-center justify-center bg-[var(--accent-primary)] text-white hover:text-white"
             >
               <i className="fas fa-paper-plane"></i>
             </button>

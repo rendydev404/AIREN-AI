@@ -1,48 +1,14 @@
 "use client"
 
-import { useState, useRef, useEffect } from 'react'
-import { gsap } from 'gsap'
+import { useState, useRef } from 'react'
 import { CodingCanvasProps } from '@/types'
+import { Modal } from './modal'
 
 export function CodingCanvas({ isOpen, onClose }: CodingCanvasProps) {
   const [code, setCode] = useState('')
   const [language, setLanguage] = useState('html')
   const [isCopied, setIsCopied] = useState(false)
-  const modalRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
-
-  useEffect(() => {
-    try {
-      if (isOpen) {
-        gsap.set(modalRef.current, { opacity: 0, visibility: 'hidden' })
-        gsap.timeline()
-          .to(modalRef.current, { opacity: 1, visibility: 'visible', duration: 0.3, ease: 'power2.out' })
-          .fromTo(contentRef.current, 
-            { scale: 0.85, opacity: 0, y: -30 }, 
-            { scale: 1, opacity: 1, y: 0, duration: 0.4, ease: 'back.out(1.7)' }, 
-            "-=0.15"
-          )
-      } else {
-        gsap.timeline({
-          onComplete: () => {
-            if (modalRef.current) {
-              modalRef.current.style.visibility = 'hidden'
-            }
-          }
-        })
-        .to(contentRef.current, { scale: 0.85, opacity: 0, y: 30, duration: 0.3, ease: 'power2.in' })
-        .to(modalRef.current, { opacity: 0, duration: 0.3, ease: 'power2.in' }, "-=0.2")
-      }
-    } catch (error) {
-      console.warn('GSAP error in coding canvas:', error)
-      // Fallback: simple show/hide
-      if (modalRef.current) {
-        modalRef.current.style.visibility = isOpen ? 'visible' : 'hidden'
-        modalRef.current.style.opacity = isOpen ? '1' : '0'
-      }
-    }
-  }, [isOpen])
 
   const runCode = () => {
     if (!iframeRef.current) {
@@ -193,75 +159,72 @@ export function CodingCanvas({ isOpen, onClose }: CodingCanvasProps) {
     }).catch(err => console.error('Failed to copy code: ', err))
   }
 
-  if (!isOpen) return null
-
   return (
-    <div 
-      ref={modalRef}
-      className="modal"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose()
-      }}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="CODING CANVAS"
     >
-      <div ref={contentRef} className="modal-content w-11/12 max-w-6xl h-[90vh] flex flex-col overflow-hidden">
-        <div className="flex justify-between items-center p-3 md:p-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
-          <h3 className="text-lg md:text-xl font-semibold" style={{ color: 'var(--accent-primary)' }}>
-            <i className="fas fa-laptop-code inline-block mr-2 -mt-1"></i>
-            Tempat Ngoding 
-          </h3>
-          <button 
-            onClick={onClose}
-            className="coding-canvas-header-button rounded-full hover:bg-[rgba(var(--accent-primary-rgb),0.1)] focus:outline-none"
-          >
-            <i className="fas fa-times"></i>
-          </button>
-        </div>
-        
-        <div className="flex-1 p-3 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 overflow-hidden code-panel-container">
-          <div className="flex flex-col h-full overflow-hidden code-editor-panel md:pr-2">
-            <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <select 
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="p-2 text-sm bg-[var(--bg-input)] text-[var(--text-primary)] border border-[var(--border-color)] rounded"
-              >
-                <option value="html">HTML</option>
-                <option value="css">CSS</option>
-                <option value="javascript">JavaScript</option>
-              </select>
+      <div className="flex flex-col min-h-[60vh] md:min-h-[70vh] w-full overflow-hidden">
+
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 overflow-hidden">
+          {/* EDITOR COLUMN */}
+          <div className="flex flex-col h-full overflow-hidden gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 p-1">
+              <div className="pixel-input-wrapper !p-0 !border-2 w-auto bg-[var(--panel-bg)]">
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  className="pixel-input-field !text-sm !py-1 !px-2 bg-transparent cursor-pointer uppercase font-bold text-[var(--text-primary)] focus:outline-none"
+                >
+                  <option value="html">HTML</option>
+                  <option value="css">CSS</option>
+                  <option value="javascript">JS</option>
+                </select>
+              </div>
+
               <div className="flex space-x-2">
-                <button 
+                <button
                   onClick={runCode}
-                  className="ai-action-button text-xs sm:text-sm py-1.5 px-2.5 sm:py-2 sm:px-3"
+                  className="pixel-btn !py-2 !px-3 hover:scale-105 active:scale-95"
+                  title="Run Code"
                 >
-                  <i className="fas fa-play"></i> Run
+                  <i className="fas fa-play text-xs sm:text-sm"></i>
+                  <span className="hidden sm:inline text-xs ml-2">RUN</span>
                 </button>
-                <button 
+                <button
                   onClick={copyCode}
-                  className="ai-action-button text-xs sm:text-sm py-1.5 px-2.5 sm:py-2 sm:px-3"
+                  className="pixel-btn !py-2 !px-3 hover:scale-105 active:scale-95"
+                  title="Copy Code"
                 >
-                  <i className={`fas ${isCopied ? 'fa-check' : 'fa-copy'}`}></i> 
-                  {isCopied ? 'Copied!' : 'Copy'}
+                  <i className={`fas ${isCopied ? 'fa-check' : 'fa-copy'} text-xs sm:text-sm`}></i>
+                  <span className="hidden sm:inline text-xs ml-2">{isCopied ? 'COPIED' : 'COPY'}</span>
                 </button>
               </div>
             </div>
-            <textarea 
+
+            <textarea
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full p-2 text-sm resize-none flex-1 bg-[var(--bg-input)] text-[var(--text-primary)] border border-[var(--border-color)] rounded font-roboto-mono"
-              placeholder="Tulis kodemu di sini..."
+              className="resize-none flex-1 w-full p-3 sm:p-4 bg-[var(--bg-input)] text-[var(--text-primary)] border-2 border-[var(--border-color)] font-['Fira_Code'] font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] shadow-inner custom-scrollbar"
+              placeholder={`// Write your ${language.toUpperCase()} code here...`}
+              spellCheck={false}
             />
           </div>
-          
-          <div className="flex flex-col h-full overflow-hidden code-preview-panel md:pl-2">
-            <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Preview:</p>
-            <iframe 
+
+          {/* PREVIEW COLUMN */}
+          <div className="flex flex-col h-full overflow-hidden border-t-4 lg:border-t-0 lg:border-l-4 border-[var(--border-color)] pt-4 lg:pt-0 lg:pl-4 min-h-[300px]">
+            <div className="flex items-center justify-between mb-2">
+              <span className="bg-[var(--text-secondary)] text-[var(--bg-color)] px-2 py-0.5 text-xs font-bold font-['Press_Start_2P']">PREVIEW OUTPUT</span>
+            </div>
+            <iframe
               ref={iframeRef}
-              className="w-full flex-1 border border-[var(--border-color)] rounded bg-white dark:bg-slate-800"
+              className="w-full flex-1 border-2 border-[var(--border-color)] bg-white shadow-[4px_4px_0px_rgba(0,0,0,0.1)]"
+              title="Code Preview"
             />
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   )
-} 
+}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ModalProps } from '@/types'
 import { createPortal } from 'react-dom'
 
@@ -36,76 +36,46 @@ export function Modal({ isOpen, onClose, title, children, className = "" }: Moda
 
   return createPortal(
     <div
-      className={`modal fixed inset-0 z-[9999] flex items-center justify-center p-4 ${className}`}
+      className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 modal-backdrop animate-in fade-in duration-200 ${className}`}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
-      style={{
-        background: 'rgba(0,0,0,0.85)', // Dark dimming for retro focus
-        display: 'flex',
-      }}
     >
       <div
-        className="modal-content pixel-box w-full max-w-md mx-auto relative"
+        className="pixel-box w-[95%] sm:w-full max-w-lg flex flex-col max-h-[90vh] shadow-2xl animate-in zoom-in-95 duration-200"
         style={{
-          background: 'var(--panel-bg)',
-          border: '4px solid var(--border-color)',
           boxShadow: '8px 8px 0px rgba(0,0,0,0.5)',
-          padding: '20px',
-          maxHeight: '90vh',
-          display: 'flex',
-          flexDirection: 'column',
-          borderRadius: 0,
         }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
       >
         {/* Retro Title Bar */}
-        <div
-          className="flex justify-between items-center mb-6 pb-2"
-          style={{
-            borderBottom: '4px solid var(--border-color)',
-          }}
-        >
+        <div className="flex justify-between items-center p-3 sm:p-4 border-b-2 sm:border-b-4 border-[var(--border-color)] bg-[var(--bg-color)] shrink-0">
           <h3
-            className="text-lg font-bold uppercase truncate pr-4"
-            style={{
-              fontFamily: '"Press Start 2P", cursive',
-              color: 'var(--accent-primary)',
-              lineHeight: '1.5',
-            }}
+            id="modal-title"
+            className="text-sm sm:text-base md:text-lg font-bold uppercase truncate pr-4 text-[var(--accent-primary)] font-['Press_Start_2P'] leading-relaxed"
           >
             {title}
           </h3>
 
           <button
             onClick={onClose}
-            className="pixel-btn"
-            style={{
-              padding: '4px 8px',
-              minWidth: '32px',
-              minHeight: '32px',
-              background: 'var(--bg-color)',
-            }}
+            className="pixel-btn !p-2 !min-w-[32px] !min-h-[32px] flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors"
+            aria-label="Close"
           >
-            X
+            <i className="fas fa-times"></i>
           </button>
         </div>
 
         {/* Content */}
-        <div
-          className="relative z-10 overflow-y-auto custom-scrollbar"
-          style={{
-            color: 'var(--text-primary)',
-            fontFamily: '"VT323", monospace',
-            fontSize: '1.2rem',
-          }}
-        >
+        <div className="relative p-4 sm:p-6 overflow-y-auto custom-scrollbar bg-[var(--panel-bg)] flex-1 font-['VT323'] text-lg text-[var(--text-primary)]">
           {children}
         </div>
 
-        {/* Bottom Button Area if needed, but usually just content for modals. 
-            We'll add a pixel separator though. */}
-        <div className="mt-6 pt-4 border-t-4 border-[var(--border-color)]">
+        {/* Footer */}
+        <div className="p-3 border-t-2 sm:border-t-4 border-[var(--border-color)] bg-[var(--bg-color)] flex justify-end shrink-0">
           <button
             onClick={onClose}
-            className="pixel-btn w-full"
+            className="pixel-btn w-full sm:w-auto text-xs sm:text-sm"
           >
             CLOSE
           </button>

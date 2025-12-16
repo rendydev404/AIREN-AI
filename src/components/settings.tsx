@@ -8,20 +8,17 @@ import { SettingsProps } from '@/types'
 function PixelCheckbox({ checked, onChange, label }: { checked: boolean; onChange: (checked: boolean) => void; label: string }) {
   return (
     <label
-      className="flex items-center justify-between cursor-pointer group py-3 px-2 hover:bg-[var(--accent-bg)] transition-colors"
-      style={{ border: '2px solid transparent' }}
+      className="flex items-center justify-between cursor-pointer group py-3 px-3 hover:bg-[var(--accent-bg)] transition-colors border-2 border-transparent hover:border-[var(--border-color)]"
     >
-      <span className="font-bold uppercase text-sm" style={{ fontFamily: '"Press Start 2P"' }}>{label}</span>
+      <span className="font-bold uppercase text-xs sm:text-sm font-['Press_Start_2P']">{label}</span>
       <div
-        onClick={() => onChange(!checked)}
-        className="w-8 h-8 flex items-center justify-center cursor-pointer"
-        style={{
-          background: 'var(--panel-bg)',
-          border: '4px solid var(--border-color)',
-          boxShadow: '2px 2px 0px var(--border-color)',
+        onClick={(e) => {
+          e.preventDefault()
+          onChange(!checked)
         }}
+        className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center cursor-pointer bg-[var(--panel-bg)] border-2 sm:border-4 border-[var(--border-color)] shadow-[2px_2px_0px_var(--border-color)]"
       >
-        {checked && <div className="w-4 h-4 bg-[var(--accent-primary)]"></div>}
+        {checked && <div className="w-3 h-3 sm:w-4 sm:h-4 bg-[var(--accent-primary)] animate-in zoom-in duration-200"></div>}
       </div>
     </label>
   )
@@ -32,21 +29,16 @@ function PixelRadio({ checked, onChange, label, description }: { checked: boolea
   return (
     <label
       onClick={onChange}
-      className={`flex items-start gap-4 p-3 cursor-pointer border-2 ${checked ? 'border-[var(--accent-primary)] bg-[var(--accent-bg)]' : 'border-transparent'}`}
+      className={`flex items-start gap-4 p-3 cursor-pointer border-2 transition-all duration-200 ${checked ? 'border-[var(--accent-primary)] bg-[var(--accent-bg)] shadow-[4px_4px_0px_rgba(0,0,0,0.1)]' : 'border-transparent hover:border-[var(--border-color)]'}`}
     >
       <div
-        className="w-6 h-6 flex-shrink-0 flex items-center justify-center"
-        style={{
-          border: '4px solid var(--border-color)',
-          background: 'var(--panel-bg)',
-          borderRadius: 0, // Explicitly square
-        }}
+        className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 flex items-center justify-center border-2 sm:border-4 border-[var(--border-color)] bg-[var(--panel-bg)] rounded-none"
       >
-        {checked && <div className="w-3 h-3 bg-[var(--accent-primary)] rounded-none"></div>}
+        {checked && <div className="w-2 h-2 sm:w-3 sm:h-3 bg-[var(--accent-primary)] rounded-none animate-in zoom-in duration-200"></div>}
       </div>
       <div>
-        <span className="font-bold uppercase block text-sm mb-1" style={{ fontFamily: '"Press Start 2P"' }}>{label}</span>
-        {description && <p className="text-sm opacity-80" style={{ fontFamily: '"VT323"' }}>{description}</p>}
+        <span className="font-bold uppercase block text-xs sm:text-sm mb-1 font-['Press_Start_2P']">{label}</span>
+        {description && <p className="text-sm sm:text-base opacity-90 font-['VT323'] leading-tight">{description}</p>}
       </div>
     </label>
   )
@@ -56,17 +48,13 @@ function PixelRadio({ checked, onChange, label, description }: { checked: boolea
 function PixelDivider() {
   return (
     <div
-      className="my-6"
-      style={{
-        height: '4px',
-        background: 'var(--border-color)',
-        opacity: 0.2
-      }}
+      className="my-4 sm:my-6 h-1 w-full bg-[var(--border-color)] opacity-20"
     />
   )
 }
 
 export function Settings({ isOpen, onClose, theme, onThemeChange }: SettingsProps) {
+  // Mock states for UI demo (persistence not fully implemented yet)
   const [autoSave, setAutoSave] = useState(true)
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [animationsEnabled, setAnimationsEnabled] = useState(true)
@@ -77,16 +65,13 @@ export function Settings({ isOpen, onClose, theme, onThemeChange }: SettingsProp
       onClose={onClose}
       title="SETTINGS"
     >
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Theme Section */}
         <div>
-          <h4
-            className="mb-4 text-xs"
-            style={{ fontFamily: '"Press Start 2P"', color: 'var(--text-secondary)' }}
-          >
+          <h4 className="mb-3 sm:mb-4 text-xs font-['Press_Start_2P'] text-[var(--text-secondary)] tracking-widest">
             [ THEME SELECT ]
           </h4>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <PixelRadio
               checked={theme === 'light'}
               onChange={() => onThemeChange('light')}
@@ -103,7 +88,7 @@ export function Settings({ isOpen, onClose, theme, onThemeChange }: SettingsProp
               checked={theme === 'system'}
               onChange={() => onThemeChange('system')}
               label="SYSTEM"
-              description="Auto-Detect"
+              description="Auto-Detect System Prefs"
             />
           </div>
         </div>
@@ -112,13 +97,10 @@ export function Settings({ isOpen, onClose, theme, onThemeChange }: SettingsProp
 
         {/* General Settings */}
         <div>
-          <h4
-            className="mb-4 text-xs"
-            style={{ fontFamily: '"Press Start 2P"', color: 'var(--text-secondary)' }}
-          >
+          <h4 className="mb-3 sm:mb-4 text-xs font-['Press_Start_2P'] text-[var(--text-secondary)] tracking-widest">
             [ SYSTEM CONFIG ]
           </h4>
-          <div className="space-y-1 border-2 border-[var(--border-color)] p-2">
+          <div className="flex flex-col gap-1 border-2 border-[var(--border-color)] p-2 bg-[var(--bg-color)] shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
             <PixelCheckbox
               checked={autoSave}
               onChange={setAutoSave}
@@ -141,24 +123,21 @@ export function Settings({ isOpen, onClose, theme, onThemeChange }: SettingsProp
 
         {/* Keyboard Shortcuts */}
         <div>
-          <h4
-            className="mb-4 text-xs"
-            style={{ fontFamily: '"Press Start 2P"', color: 'var(--text-secondary)' }}
-          >
+          <h4 className="mb-3 sm:mb-4 text-xs font-['Press_Start_2P'] text-[var(--text-secondary)] tracking-widest">
             [ CONTROLS ]
           </h4>
-          <div className="border-2 border-[var(--border-color)] p-4 space-y-2 font-mono text-sm">
-            <div className="flex justify-between">
-              <span>SEND MSG</span>
-              <span className="bg-[var(--text-secondary)] text-[var(--bg-color)] px-2">CTRL+ENTER</span>
+          <div className="border-2 border-[var(--border-color)] p-3 sm:p-4 space-y-3 font-mono text-sm bg-[var(--panel-bg)]">
+            <div className="flex justify-between items-center group">
+              <span className="text-[var(--text-primary)]">SEND MSG</span>
+              <kbd className="bg-[var(--text-secondary)] text-[var(--bg-color)] px-2 py-0.5 text-xs font-bold font-['Press_Start_2P'] group-hover:bg-[var(--accent-primary)] transition-colors">CTRL+ENTER</kbd>
             </div>
-            <div className="flex justify-between">
-              <span>THEME</span>
-              <span className="bg-[var(--text-secondary)] text-[var(--bg-color)] px-2">CTRL+T</span>
+            <div className="flex justify-between items-center group">
+              <span className="text-[var(--text-primary)]">THEME</span>
+              <kbd className="bg-[var(--text-secondary)] text-[var(--bg-color)] px-2 py-0.5 text-xs font-bold font-['Press_Start_2P'] group-hover:bg-[var(--accent-primary)] transition-colors">CTRL+T</kbd>
             </div>
-            <div className="flex justify-between">
-              <span>CLEAR</span>
-              <span className="bg-[var(--text-secondary)] text-[var(--bg-color)] px-2">CTRL+L</span>
+            <div className="flex justify-between items-center group">
+              <span className="text-[var(--text-primary)]">CLEAR</span>
+              <kbd className="bg-[var(--text-secondary)] text-[var(--bg-color)] px-2 py-0.5 text-xs font-bold font-['Press_Start_2P'] group-hover:bg-[var(--accent-primary)] transition-colors">CTRL+L</kbd>
             </div>
           </div>
         </div>

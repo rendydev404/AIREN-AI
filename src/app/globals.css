@@ -10,24 +10,18 @@
      PIXEL ART - LIGHT THEME (RETRO BEIGE)
      ========================================= */
   --bg-color: #fdf6e3;
-  /* Solarized Light / Beige */
   --text-primary: #000000;
   --text-secondary: #586e75;
 
   --panel-bg: #ffffff;
   --border-color: #000000;
 
-  /* Retro Accents */
-  --accent-primary: #ff00ff;
-  /* Magenta */
+  --accent-primary: #5e25fc;
   --accent-secondary: #00ffff;
-  /* Cyan */
   --accent-tertiary: #ffff00;
-  /* Yellow */
   --accent-bg: #eee8d5;
 
-  /* Bubbles */
-  --bubble-user-bg: #ff00ff;
+  --bubble-user-bg: #5331ff;
   --bubble-user-text: #ffffff;
   --bubble-ai-bg: #ffffff;
   --bubble-ai-text: #000000;
@@ -39,26 +33,24 @@
   /* =========================================
      PIXEL ART - DARK THEME (RETRO TERMINAL)
      ========================================= */
-  --bg-color: #002b36;
-  /* Solarized Dark / Deep Cyan */
-  --text-primary: #00ff00;
-  /* Terminal Green */
-  --text-secondary: #839496;
+  --bg-color: #0d1117;
+  /* GitHub Dark Dim-ish */
+  --text-primary: #39ff14;
+  /* Hacker Green */
+  --text-secondary: #8b949e;
 
-  --panel-bg: #073642;
-  --border-color: #00ff00;
+  --panel-bg: #161b22;
+  --border-color: #39ff14;
 
-  /* Retro Accents */
-  --accent-primary: #00ff00;
+  --accent-primary: #39ff14;
   --accent-secondary: #ff00ff;
   --accent-tertiary: #00ffff;
-  --accent-bg: #002b36;
+  --accent-bg: #0d1117;
 
-  /* Bubbles */
-  --bubble-user-bg: #00ff00;
+  --bubble-user-bg: #39ff14;
   --bubble-user-text: #000000;
-  --bubble-ai-bg: #073642;
-  --bubble-ai-text: #00ff00;
+  --bubble-ai-bg: #21262d;
+  --bubble-ai-text: #39ff14;
 }
 
 /* =========================================
@@ -66,40 +58,26 @@
    ========================================= */
 body {
   font-family: 'VT323', monospace;
-  /* Pixel Body Font */
   font-size: 1.25rem;
-  /* Larger base size for pixel fonts */
   background-color: var(--bg-color);
   color: var(--text-primary);
+  /* Aesthetic Grid Background */
   background-image:
     linear-gradient(var(--border-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
   background-size: 40px 40px;
   background-position: -1px -1px;
-  /* Reduced opacity grid for subtle texture */
-  background-blend-mode: overlay;
-  /* Fallback if blend mode is weird, adjust opacity of grid lines in real app via rgba if needed, 
-     but here we rely on bg-color covering most of it or simple hard lines. 
-     Actually, let's make the grid subtle using RGBA directly in valid CSS if we knew the color values precisely, 
-     but using opacity on body::before is safer usually. Let's keep it simple. */
-  transition: background-color 0s;
-  /* Instant transitions for retro feel */
   overflow-x: hidden;
-  line-height: 1.2;
+  line-height: 1.4;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Grid Overlay for texture */
-body::before {
+body::after {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image:
-    linear-gradient(rgba(128, 128, 128, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(128, 128, 128, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
+  inset: 0;
+  background: var(--bg-color);
+  opacity: 0.95;
   pointer-events: none;
   z-index: -1;
 }
@@ -111,14 +89,13 @@ h4,
 h5,
 h6 {
   font-family: 'Press Start 2P', cursive;
-  /* Pixel Header Font */
   text-transform: uppercase;
   line-height: 1.5;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 16px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -129,7 +106,7 @@ h6 {
 ::-webkit-scrollbar-thumb {
   background: var(--accent-primary);
   border: 2px solid var(--border-color);
-  box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -137,61 +114,93 @@ h6 {
 }
 
 /* =========================================
-   PIXEL UTILITIES
+   PIXEL UTILITIES - RESPONSIVE & AESTHETIC
    ========================================= */
 .pixel-box {
   background: var(--panel-bg);
-  border: 4px solid var(--border-color);
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-color);
+  border: 2px solid var(--border-color);
+  box-shadow: 4px 4px 0px var(--border-color);
   border-radius: 0 !important;
-  /* STRICTLY ZERO */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .pixel-card {
-  @apply pixel-box p-4;
+  @apply pixel-box;
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .pixel-card {
+    padding: 1.5rem;
+    border-width: 3px;
+    box-shadow: 6px 6px 0px var(--border-color);
+  }
 }
 
 .pixel-btn {
   font-family: 'Press Start 2P', cursive;
-  font-size: 0.7rem;
-  padding: 12px 16px;
+  font-size: 0.75rem;
+  padding: 12px 18px;
   background: var(--bg-color);
   border: 2px solid var(--border-color);
   box-shadow: 4px 4px 0px var(--border-color);
   color: var(--text-primary);
   text-transform: uppercase;
   cursor: pointer;
-  transition: transform 0.1s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-}
-
-.pixel-btn:active {
-  transform: translate(4px, 4px);
-  box-shadow: 0px 0px 0px var(--border-color);
+  user-select: none;
+  touch-action: manipulation;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .pixel-btn:hover {
   background: var(--accent-primary);
   color: var(--bg-color);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--border-color);
 }
 
-.pixel-input {
-  font-family: 'VT323', monospace;
-  font-size: 1.25rem;
-  padding: 10px;
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--border-color);
+}
+
+/* Specific Aesthetic Input Container class */
+.pixel-input-wrapper {
+  display: flex;
+  align-items: center;
   background: var(--panel-bg);
-  border: 2px solid var(--border-color);
-  box-shadow: 2px 2px 0px var(--border-color) inset;
-  color: var(--text-primary);
-  outline: none;
+  border: 3px solid var(--border-color);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+  padding: 8px 12px;
+  transition: all 0.3s ease;
   width: 100%;
 }
 
-.pixel-input:focus {
-  background: var(--bg-color);
+.pixel-input-wrapper:focus-within {
+  box-shadow: 6px 6px 0px var(--accent-primary);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.pixel-input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  outline: none;
+  min-width: 0;
+  /* Fix flex child overflow */
+}
+
+.pixel-input-field::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.8;
 }
 
 /* =========================================
@@ -201,145 +210,85 @@ h6 {
 /* Header */
 header {
   background: var(--panel-bg) !important;
-  border-bottom: 4px solid var(--border-color);
+  border-bottom: 3px solid var(--border-color);
   z-index: 50;
-  padding: 1rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 /* Sidebar */
-.fixed.inset-0.z-50.lg\:hidden>div[class*="bg-\\[var(--bg-secondary)\\]"],
-#sidebar-logo,
-.sidebar-menu-item {
-  background: var(--panel-bg) !important;
-  border-right: 4px solid var(--border-color);
-  border-radius: 0 !important;
+.sidebar-content {
+  background: var(--panel-bg);
+  border-right: 3px solid var(--border-color);
 }
 
-/* Chat Bubbles */
-.chat-bubble {
-  margin-bottom: 1.5rem;
+/* Chat Bubbles - Improved aesthetics */
+.chat-bubble-container {
   width: 100%;
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .user-bubble {
-  @apply pixel-box;
   background: var(--bubble-user-bg);
   color: var(--bubble-user-text);
-  border-color: var(--border-color);
-  margin-right: 4px;
-  /* Space for shadow */
+  border: 2px solid var(--border-color);
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+  margin-right: 2px;
+  border-radius: 0 !important;
+  padding: 12px 16px;
+  max-width: 85%;
 }
 
 .ai-bubble {
-  @apply pixel-box;
   background: var(--bubble-ai-bg);
   color: var(--bubble-ai-text);
-  border-color: var(--border-color);
-  margin-left: 4px;
-  /* Space for shadow */
-}
-
-/* Input Area */
-footer {
-  background: var(--bg-color) !important;
-  border-top: 4px solid var(--border-color) !important;
-  padding: 1rem !important;
-  box-shadow: none !important;
-}
-
-#input-area-wrapper,
-footer .flex.items-center.p-2 {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
+  border: 2px solid var(--border-color);
+  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+  margin-left: 2px;
   border-radius: 0 !important;
-  padding: 0 !important;
-  gap: 10px;
-}
-
-/* Specific button overrides inside input area to adhere to pixel-btn style */
-#image-upload-button,
-#send-button,
-.header-button {
-  @apply pixel-btn;
-  border-radius: 0 !important;
-  width: auto !important;
-  height: auto !important;
-}
-
-/* Modal Overrides */
-.modal {
-  background-color: rgba(0, 0, 0, 0.85);
-  /* Dithered look ideally, but solid dark is fine */
-  backdrop-filter: none;
-  padding: 0 !important;
-}
-
-.modal-content {
-  @apply pixel-box;
-  max-width: 90vw;
-  max-height: 90vh;
-  border-width: 4px !important;
-  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.5) !important;
-  animation: none !important;
+  padding: 12px 16px;
+  max-width: 90%;
 }
 
 /* Code Blocks */
-.ai-code-bubble-container {
-  @apply pixel-box;
-  border-width: 2px !important;
-  box-shadow: 2px 2px 0px var(--border-color) !important;
-  background: #1a1a1a;
-  color: #00ff00;
-  /* Always green on black for code */
-  font-family: 'Courier New', monospace;
-  /* Or generic monospace */
-}
-
 .ai-code-block {
-  background: transparent !important;
-  border: none;
-  font-family: 'VT323', monospace;
-  font-size: 1.1rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
 }
 
-.ai-code-language-tag {
-  background: var(--accent-primary);
-  color: var(--bg-color);
-  border: 1px solid var(--border-color);
+/* Footer / Input Area */
+footer {
+  background: var(--bg-color) !important;
+  border-top: 3px solid var(--border-color) !important;
+  /* Remove default shadows or padding that conflicts */
+}
+
+/* Modals - Clean up */
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+/* Splash Screen */
+#splash-screen {
+  background: var(--bg-color);
+}
+
+#splash-logo {
   font-family: 'Press Start 2P', cursive;
-  font-size: 0.5rem;
-  border-radius: 0;
-}
-
-/* Typing Indicator */
-.typing-indicator {
-  background: transparent;
-  border: none;
-  display: flex;
-  gap: 8px;
-}
-
-.typing-indicator span {
-  width: 10px;
-  height: 10px;
-  background-color: var(--text-primary);
-  border-radius: 0;
-  /* SQUARE DOTS */
-  box-shadow: 2px 2px 0px var(--border-color);
-  animation: pixelBounce 1s infinite steps(2);
-}
-
-@keyframes pixelBounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-5px);
-  }
+  text-shadow: 4px 4px 0px var(--border-color);
 }
 
 /* Utilities */
@@ -351,30 +300,13 @@ footer .flex.items-center.p-2 {
   background-color: var(--accent-primary);
 }
 
-/* Remove rounded corners globally */
+/* Force zero radius global override */
 .rounded-xl,
 .rounded-lg,
 .rounded-full,
-.rounded-2xl,
 .rounded-md,
 .rounded-sm,
-.rounded {
+.rounded,
+.rounded-2xl {
   border-radius: 0 !important;
-}
-
-/* Developer Info specific */
-#developerInfoModal .dev-avatar {
-  border-radius: 0 !important;
-  border: 4px solid var(--border-color);
-  box-shadow: 4px 4px 0px var(--border-color);
-}
-
-/* Splash Screen */
-#splash-screen {
-  background: var(--bg-color);
-}
-
-#splash-logo {
-  font-family: 'Press Start 2P', cursive;
-  text-shadow: 4px 4px 0px var(--border-color);
 }
